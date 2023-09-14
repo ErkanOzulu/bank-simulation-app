@@ -23,7 +23,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
         //we need to create Account object
-        Account account = Account.builder().id(UUID.randomUUID()).userId(userId)
+        Account account = Account.builder().accountId(UUID.randomUUID()).userId(userId)
                 .balance(balance).accountType(accountType).creationDate(createDate).build();
         //save into the database(repository)
 
