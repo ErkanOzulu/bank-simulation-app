@@ -36,6 +36,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> listAllAccounts() {
-        return null;
+        return accountRepository.findAll();
     }
 }
