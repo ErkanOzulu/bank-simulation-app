@@ -18,8 +18,8 @@ import java.util.UUID;
 
 @Component
 public class TransactionServiceImp implements TransactionService {
-   private final AccountRepository accountRepository;
-   private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
     public TransactionServiceImp(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
@@ -35,16 +35,15 @@ public class TransactionServiceImp implements TransactionService {
                -if both accounts are checking, if not, one of them saving, it needs to be same userId
          */
         validateAccount(sender, receiver);
-        checkAccountOwnership(sender,receiver);
-        executeBalanceAndUpdateIfRequired(amount,sender,receiver);
+        checkAccountOwnership(sender, receiver);
+        executeBalanceAndUpdateIfRequired(amount, sender, receiver);
         //makeTransfer
         /*
             after all validations are completed, and money is transferred, we need to create Transaction object and save/return it.
          */
-        Transaction transaction=Transaction.builder().amount(amount).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
+        Transaction transaction = Transaction.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
         //save into the db and return it
         return transactionRepository.save(transaction);
-
 
 
     }
@@ -57,7 +56,7 @@ public class TransactionServiceImp implements TransactionService {
             sender.setBalance(sender.getBalance().subtract(amount));
             //50+80
             receiver.setBalance(receiver.getBalance().add(amount));
-        }else{
+        } else {
             throw new BalanceNotSufficientException("Balance not enough for transfer");
         }
 
@@ -66,18 +65,21 @@ public class TransactionServiceImp implements TransactionService {
     private boolean checkSenderBalance(Account sender, BigDecimal amount) {
 
         //verify sender has uneugh balance to send
-        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO)>=0;
+        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
     }
 
     private void checkAccountOwnership(Account sender, Account receiver) {
-             if (sender.getAccountType().equals(AccountType.SAVING)||receiver.getAccountType().equals(AccountType.SAVING)&& !sender.getUserId().equals(receiver.getUserId())){
-                 throw new AccountOwnershipException("If one of the account is saving, user must be the same for sender and receiver");
-             }
 
             /*
             write an if statement that checks if one of the account is saving,
             and user of sender or receiver is not the same, throw AccountOwnershipException
          */
+
+        if (sender.getAccountType().equals(AccountType.SAVING) || receiver.getAccountType().equals(AccountType.SAVING) && !sender.getUserId().equals(receiver.getUserId())) {
+            throw new AccountOwnershipException("If one of the account is saving, user must be the same for sender and receiver");
+        }
+
+
     }
 
     private void validateAccount(Account sender, Account receiver) {
@@ -87,12 +89,12 @@ public class TransactionServiceImp implements TransactionService {
             -f the account exist in the database (repository)
          */
 
-        if (sender==null || receiver==null) {
+        if (sender == null || receiver == null) {
             throw new BadRequestException("Sender or Receiver cannot be null");
         }
 
         //if account are the same throw BadRequestException with saying accounts needs to be different
-        if(sender.getAccountId().equals(receiver.getAccountId())){
+        if (sender.getAccountId().equals(receiver.getAccountId())) {
             throw new BadRequestException("Sender account needs to be different than receiver account");
         }
 
@@ -102,7 +104,7 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     private void findAccountById(UUID accountId) {
-       accountRepository.findById(accountId);
+        accountRepository.findById(accountId);
 
     }
 
