@@ -4,11 +4,13 @@ import com.bank.enums.AccountType;
 import com.bank.exception.AccountOwnershipException;
 import com.bank.exception.BadRequestException;
 import com.bank.exception.BalanceNotSufficientException;
+import com.bank.exception.UnderConstructionException;
 import com.bank.model.Account;
 import com.bank.model.Transaction;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.TransactionRepository;
 import com.bank.service.TransactionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,6 +20,8 @@ import java.util.UUID;
 
 @Component
 public class TransactionServiceImp implements TransactionService {
+    @Value("${under_construction}")
+    private boolean underConstruction;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
@@ -28,23 +32,26 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date creationDate, String message) {
+       if (!underConstruction) {
         /*
                -if sender or receiver is null ?
                -if sender and receiver is the same account ?
                -if sender has enough balance to make transfer ?
                -if both accounts are checking, if not, one of them saving, it needs to be same userId
          */
-        validateAccount(sender, receiver);
-        checkAccountOwnership(sender, receiver);
-        executeBalanceAndUpdateIfRequired(amount, sender, receiver);
-        //makeTransfer
+           validateAccount(sender, receiver);
+           checkAccountOwnership(sender, receiver);
+           executeBalanceAndUpdateIfRequired(amount, sender, receiver);
+           //makeTransfer
         /*
             after all validations are completed, and money is transferred, we need to create Transaction object and save/return it.
          */
-        Transaction transaction = Transaction.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
-        //save into the db and return it
-        return transactionRepository.save(transaction);
-
+           Transaction transaction = Transaction.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
+           //save into the db and return it
+           return transactionRepository.save(transaction);
+       }else {
+           throw new UnderConstructionException("App is under construction, please try again later ");
+       }
 
     }
 
