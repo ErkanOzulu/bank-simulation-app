@@ -65,7 +65,7 @@ public class TransactionServiceImp implements TransactionService {
     private boolean checkSenderBalance(Account sender, BigDecimal amount) {
 
         //verify sender has uneugh balance to send
-        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
+        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >= 0;  //-1 - 0 - 1
     }
 
     private void checkAccountOwnership(Account sender, Account receiver) {
@@ -110,6 +110,6 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public List<Transaction> findAllTransaction() {
-        return null;
+        return transactionRepository.findAll();
     }
 }

@@ -16,4 +16,7 @@ public Transaction save(Transaction transaction){
     return transaction;
 }
 
+    public List<Transaction> findAll() {
+    return transactionList;
+    }
 }
