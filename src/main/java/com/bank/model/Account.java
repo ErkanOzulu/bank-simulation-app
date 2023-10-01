@@ -1,5 +1,6 @@
 package com.bank.model;
 
+import com.bank.enums.AccountStatus;
 import com.bank.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ public class Account {
     private AccountType accountType;
     private Date creationDate;
     private Long userId;
-
+    private AccountStatus accountStatus;
 
 
 }
