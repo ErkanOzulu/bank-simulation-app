@@ -1,0 +1,34 @@
+Adding validations to our Bank Simulation App.
+
+1.we are suppose to add validation dependency to our pom.xml file
+     <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+2.Use needed annotations for fields validation of your models/Pojos
+
+    private UUID id;
+    @NotNull
+    @Positive
+    private BigDecimal balance;
+    @NotNull
+    private AccountType accountType;
+    private Date creationDate;
+    @NotNull
+    private Long userId;
+    private AccountStatus accountStatus;
+
+TASK
+3.We need to create the file (message.properties) under the resource package
+    #property names
+    account.balance= Balance
+    account.userId = User ID
+    account.accountType = Account Type
+
+
+    #messages
+    NotNull.account.balance = {0} cannot be null.
+    Positive.account.balance = {0} cannot be negative number.
+    NotNull.account.userId = {0} cannot be null.
+    NotNull.account.accountType = {0} cannot be null.
