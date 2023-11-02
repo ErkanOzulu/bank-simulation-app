@@ -5,8 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/shards.min.css">
 </head>
 <body>
@@ -14,36 +16,61 @@
     <div class="row">
         <div class="col-md-6">
             <div>
-                <form th:object="${transaction}"  th:action="@{/transfer}" method="post">
+                <form th:object="${transaction}" th:action="@{/transfer}" method="post">
                     <div class="row">
                         <div class="form-group blu-margin">
                             <label for="sender" class="col-form-label">Sender</label>
                             <select class="form-control" id="sender" th:field="*{sender}">
-                                <option value="0">Select Account</option>
+                                <option th:value="''" th:text="Select"></option>
                                 <option th:each="account : ${accounts}" th:value="${account.getAccountId()}"
                                         th:text="${account.balance}+'-'+${account.userId}+'-'+${account.accountType.name()}"></option>
                             </select>
+                            <span th:if="${#fields.hasErrors('sender')}">
+                                <!--added to achieve colored alert -"alert alert-danger-->
+                                    <ul class="alert alert-danger">
+                                        <li th:each="err:${#fields.errors('sender')}" th:text="${err}"></li>
+                                    </ul>
+                                </span>
                         </div>
 
                         <div class="form-group blu-margin">
                             <label for="receiver" class="col-form-label">Receiver</label>
                             <select class="form-control" id="receiver" th:field="*{receiver}">
-                                <option value="0">Select Account</option>
+                                <option th:value="''" th:text="Select"></option>
                                 <option th:each="account : ${accounts}" th:value="${account.getAccountId()}"
                                         th:text="${account.balance}+'-'+${account.userId}+'-'+${account.accountType.name()}"></option>
-
                             </select>
+                            <span th:if="${#fields.hasErrors('receiver')}">
+                                <!--added to achieve colored alert -"alert alert-danger-->
+                                    <ul class="alert alert-danger">
+                                        <li th:each="err:${#fields.errors('receiver')}" th:text="${err}"></li>
+                                    </ul>
+                                </span>
+
                         </div>
 
                         <div class="form-group blu-margin">
                             <label for="amount" class="col-form-label">Amount</label>
-                            <input type="text" class="form-control" id="amount" placeholder="Amount" th:field="*{amount}">
+                            <input type="text" class="form-control" id="amount" placeholder="Amount"
+                                   th:field="*{amount}">
+
+                            <span th:if="${#fields.hasErrors('amount')}">
+                                    <ul class="alert alert-danger">
+                                        <li th:each="err:${#fields.errors('amount')}" th:text="${err}"></li>
+                                    </ul>
+                                </span>
                         </div>
 
                         <div class="form-group blu-margin">
                             <label for="message" class="col-form-label">Message</label>
-                            <input type="text" class="form-control" id="message" placeholder="Message" th:field="*{message}">
+                            <input type="text" class="form-control" id="message" placeholder="Message"
+                                   th:field="*{message}">
                         </div>
+                        <span th:if="${#fields.hasErrors('message')}">
+                           <ul class="alert alert-danger">
+                                <li th:each="err:${#fields.errors('message')}" th:text="${err}"></li>
+                           </ul>
+                         </span>
                     </div>
                     <div class="row">
                         <div class="col-md-6 my-5">
