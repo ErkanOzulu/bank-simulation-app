@@ -32,3 +32,24 @@ TASK
     Positive.account.balance = {0} cannot be negative number.
     NotNull.account.userId = {0} cannot be null.
     NotNull.account.accountType = {0} cannot be null.
+4.Update the correct method in the controller to make validation work
+
+@PostMapping("/create")
+    public String createAccount(@Valid @ModelAttribute("account") Account account, BindingResult bindingResult,Model model){
+        if(bindingResult.hasErrors()){
+
+            model.addAttribute("accountTypes", AccountType.values());
+            return "account/create-account";
+        }
+        System.out.println(account);
+        accountService.createNewAccount(account.getBalance(),new Date(),account.getAccountType(),account.getUserId());
+        return "redirect:/index";
+    }
+
+    5.Update view/html files to display errors.
+
+    <span th:if="${#fields.hasErrors('userId')}">
+      <ul class="alert alert-danger">
+          <li th:each="err :${#fields.errors('userId')}" th:text="${err}"></li>
+      </ul>
+    </span>
