@@ -126,7 +126,7 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     @Override
-    public List<TransactionDTO> findTransactionListById(UUID id) {
+    public List<TransactionDTO> findTransactionListById(Long id) {
         return transactionRepository.findTransactionListByAccountId(id);
     }
 }
