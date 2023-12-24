@@ -4,9 +4,11 @@ import com.bank.enums.AccountType;
 import com.bank.dto.AccountDTO;
 import com.bank.service.AccountService;
 import com.bank.service.TransactionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,6 +23,7 @@ public class BankSimulationAppApplication {
         //get account and transactionService beans
         AccountService accountService = container.getBean(AccountService.class);
         TransactionService transactionService = container.getBean(TransactionService.class);
+
 
         //create 2 accounts sender and receiver
 //        AccountDTO sender = accountService.createNewAccount(BigDecimal.valueOf(70), new Date(), AccountType.SAVING, 1L);
@@ -38,4 +41,8 @@ public class BankSimulationAppApplication {
 
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 }
