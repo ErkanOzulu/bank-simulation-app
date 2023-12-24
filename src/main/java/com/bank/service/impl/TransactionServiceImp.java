@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class TransactionServiceImp implements TransactionService {
@@ -46,7 +45,8 @@ public class TransactionServiceImp implements TransactionService {
         /*
             after all validations are completed, and money is transferred, we need to create Transaction object and save/return it.
          */
-           TransactionDTO transactionDTO = TransactionDTO.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
+//           TransactionDTO transactionDTO = TransactionDTO.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
+           TransactionDTO transactionDTO =new TransactionDTO();
            //save into the db and return it
            return transactionRepository.save(transactionDTO);
        }else {
@@ -110,7 +110,7 @@ public class TransactionServiceImp implements TransactionService {
 
     }
 
-    private void findAccountById(UUID accountId) {
+    private void findAccountById(Long accountId) {
         accountRepository.findById(accountId);
 
     }
