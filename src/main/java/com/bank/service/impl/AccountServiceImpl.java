@@ -2,12 +2,11 @@ package com.bank.service.impl;
 
 import com.bank.enums.AccountStatus;
 import com.bank.enums.AccountType;
-import com.bank.model.Account;
+import com.bank.dto.AccountDTO;
 import com.bank.repository.AccountRepository;
 import com.bank.service.AccountService;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.AccessibleObject;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -23,46 +22,46 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
+    public AccountDTO createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
         //we need to create Account object
-        Account account = Account.builder().accountId(UUID.randomUUID()).userId(userId)
+        AccountDTO accountDTO = AccountDTO.builder().accountId(UUID.randomUUID()).userId(userId)
                 .balance(balance).accountType(accountType).creationDate(createDate).accountStatus(AccountStatus.ACTIVE).build();
         //save into the database(repository)
 
         //return the object created
 
 
-        return accountRepository.save(account);
+        return accountRepository.save(accountDTO);
 
     }
 
     @Override
-    public List<Account> listAllAccounts() {
+    public List<AccountDTO> listAllAccounts() {
         return accountRepository.findAll();
     }
 
     @Override
     public void deleteAccount(UUID id) {
         //find the account belongs the id
-        Account account = accountRepository.findById(id);
+        AccountDTO accountDTO = accountRepository.findById(id);
 
         //set status to delete
 
-        account.setAccountStatus(AccountStatus.DELETED);
+        accountDTO.setAccountStatus(AccountStatus.DELETED);
     }
 
     @Override
     public void activateAccount(UUID id) {
         //find the account belongs the id
-        Account account = accountRepository.findById(id);
+        AccountDTO accountDTO = accountRepository.findById(id);
 
         //set status to active
 
-        account.setAccountStatus(AccountStatus.ACTIVE);
+        accountDTO.setAccountStatus(AccountStatus.ACTIVE);
     }
 
     @Override
-    public Account retrieveById(UUID id) {
+    public AccountDTO retrieveById(UUID id) {
         return accountRepository.findById(id);
     }
 
