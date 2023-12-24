@@ -1,11 +1,9 @@
-package com.bank.model;
+package com.bank.dto;
 
 import com.bank.enums.AccountStatus;
 import com.bank.enums.AccountType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -15,7 +13,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class Account {
+public class AccountDTO {
 
     private UUID accountId;
     @NotNull

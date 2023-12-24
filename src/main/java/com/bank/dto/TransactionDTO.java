@@ -1,8 +1,7 @@
-package com.bank.model;
+package com.bank.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -13,7 +12,7 @@ import java.util.Date;
 import java.util.UUID;
 @Data
 @Builder
-public class Transaction {
+public class TransactionDTO {
     @NotNull
     private UUID sender;
     @NotNull
