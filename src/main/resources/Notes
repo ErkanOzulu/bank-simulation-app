@@ -107,6 +107,26 @@ Bank Simulation App - ORM
     -extend JpaRepo
     -change @component to @repository
 
+11.Start updating services
+    #listAllAccount
+    #createNewAccount
+    #deleteAccount
+    #ActiveAccount
+    #findAccountById
+    - nw logic
+    #listAllActiveAccount
+
+12.updating Transaction Service
+    added transactionMapper
+    added accountService
+    removed accountRepository
+
+    #findAllTransaction
+    #findLast10Transaction
+    #findTransactionListByAccountId
+    #MakeTransfer
+        -executeBalance
+
 
 
 
