@@ -1,5 +1,6 @@
 package com.bank.service.impl;
 
+import com.bank.entity.Transaction;
 import com.bank.enums.AccountType;
 import com.bank.exception.AccountOwnershipException;
 import com.bank.exception.BadRequestException;
@@ -7,6 +8,7 @@ import com.bank.exception.BalanceNotSufficientException;
 import com.bank.exception.UnderConstructionException;
 import com.bank.dto.AccountDTO;
 import com.bank.dto.TransactionDTO;
+import com.bank.mapper.TransactionMapper;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.TransactionRepository;
 import com.bank.service.AccountService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionServiceImpl implements TransactionService {
@@ -24,36 +27,38 @@ public class TransactionServiceImpl implements TransactionService {
     private boolean underConstruction;
     private final AccountService accountService;
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(AccountRepository accountRepository, AccountService accountService, TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(AccountRepository accountRepository, AccountService accountService, TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.accountService = accountService;
-
         this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
     public TransactionDTO makeTransfer(AccountDTO sender, AccountDTO receiver, BigDecimal amount, Date creationDate, String message) {
-       if (!underConstruction) {
+        if (!underConstruction) {
         /*
                -if sender or receiver is null ?
                -if sender and receiver is the same account ?
                -if sender has enough balance to make transfer ?
                -if both accounts are checking, if not, one of them saving, it needs to be same userId
          */
-           validateAccount(sender, receiver);
-           checkAccountOwnership(sender, receiver);
-           executeBalanceAndUpdateIfRequired(amount, sender, receiver);
-           //makeTransfer
+            validateAccount(sender, receiver);
+            checkAccountOwnership(sender, receiver);
+            executeBalanceAndUpdateIfRequired(amount, sender, receiver);
+            //makeTransfer
         /*
             after all validations are completed, and money is transferred, we need to create Transaction object and save/return it.
          */
-//           TransactionDTO transactionDTO = TransactionDTO.builder().amount(amount).sender(sender.getAccountId()).receiver(receiver.getAccountId()).createDate(creationDate).message(message).build();
-           TransactionDTO transactionDTO =new TransactionDTO();
-           //save into the db and return it
-           return transactionRepository.save(transactionDTO);
-       }else {
-           throw new UnderConstructionException("App is under construction, please try again later ");
-       }
+
+            TransactionDTO transactionDTO = new TransactionDTO(sender, receiver, amount, message, creationDate);
+            //save into the db and return it
+            transactionRepository.save(transactionMapper.convertToEntity(transactionDTO));
+            return transactionDTO;
+        } else {
+            throw new UnderConstructionException("App is under construction, please try again later ");
+        }
 
     }
 
@@ -65,6 +70,20 @@ public class TransactionServiceImpl implements TransactionService {
             sender.setBalance(sender.getBalance().subtract(amount));
             //50+80
             receiver.setBalance(receiver.getBalance().add(amount));
+            /**
+             get the dto from the database for both sender and receiver, update balance and save it.
+             create accountService updateAccount method and use it for saving.
+             */
+            //find sender by id
+            AccountDTO senderAccount = accountService.retrieveById(sender.getAccountId());
+            senderAccount.setBalance(sender.getBalance());
+            accountService.updateAccount(senderAccount);
+
+
+            AccountDTO receiverAccount = accountService.retrieveById(receiver.getAccountId());
+            receiverAccount.setBalance(receiver.getBalance());
+            accountService.updateAccount(receiverAccount);
+
         } else {
             throw new BalanceNotSufficientException("Balance not enough for transfer");
         }
@@ -119,16 +138,26 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionDTO> findAllTransaction() {
-        return transactionRepository.findAll();
+        return transactionRepository.findAll().stream().map(transactionMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<TransactionDTO> last10Transactions() {
-        return transactionRepository.findLast10Transactions();
+        //We want last 10 latest transaction
+        //write a query to get result of last transaction
+
+        List<Transaction> last10Transactions = transactionRepository.findLast10Transactions();
+
+        //convert to dto and return it
+        return last10Transactions.stream().map(transactionMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<TransactionDTO> findTransactionListById(Long id) {
-        return transactionRepository.findTransactionListByAccountId(id);
+
+        //get the list of transactions if account id is involved as a sender or receiver
+
+        List<Transaction> transactionList = transactionRepository.findTransactionListByAccountId(id);
+        return transactionList.stream().map(transactionMapper::convertToDTO).collect(Collectors.toList());
     }
 }

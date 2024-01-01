@@ -92,5 +92,10 @@ public class AccountServiceImpl implements AccountService {
         //    }
     }
 
+    @Override
+    public void updateAccount(AccountDTO accountDTO) {
+        accountRepository.save(accountMapper.convertToEntity(accountDTO));
+    }
+
 }
 
