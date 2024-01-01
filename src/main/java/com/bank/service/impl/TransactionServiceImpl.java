@@ -9,6 +9,7 @@ import com.bank.dto.AccountDTO;
 import com.bank.dto.TransactionDTO;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.TransactionRepository;
+import com.bank.service.AccountService;
 import com.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,14 +19,15 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class TransactionServiceImp implements TransactionService {
+public class TransactionServiceImpl implements TransactionService {
     @Value("${under_construction}")
     private boolean underConstruction;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final TransactionRepository transactionRepository;
 
-    public TransactionServiceImp(AccountRepository accountRepository, TransactionRepository transactionRepository) {
-        this.accountRepository = accountRepository;
+    public TransactionServiceImpl(AccountRepository accountRepository, AccountService accountService, TransactionRepository transactionRepository) {
+        this.accountService = accountService;
+
         this.transactionRepository = transactionRepository;
     }
 
@@ -111,7 +113,7 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     private void findAccountById(Long accountId) {
-        accountRepository.findById(accountId);
+        accountService.retrieveById(accountId);
 
     }
 
