@@ -35,7 +35,7 @@ public class TransactionController {
        // model.addAttribute("transaction", TransactionDTO.builder().build());
         model.addAttribute("transaction", new TransactionDTO());
         //we need to provide list of all accounts
-        model.addAttribute("accounts", accountService.listAllAccounts());
+        model.addAttribute("accounts", accountService.listAllActiveAccount());
         //we need list of last 10 transactions to fill the table(business logic is missing)
         model.addAttribute("lastTransactions", transactionService.last10Transactions());
 
