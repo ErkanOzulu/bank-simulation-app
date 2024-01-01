@@ -92,8 +92,8 @@
                     </thead>
                     <tbody>
                     <tr th:each="lTransaction : ${lastTransactions}">
-                        <td th:text="${lTransaction.getSender()}"></td>
-                        <td th:text="${lTransaction.getReceiver()}"></td>
+                        <td th:text="${lTransaction.getSender().userId+'-'+lTransaction.getSender.getAccountId()}"></td>
+                        <td th:text="${lTransaction.getReceiver().getUserId()+'-'+lTransaction.getReceiver().getAccountId()}"></td>
                         <td th:text="${lTransaction.getAmount()}"></td>
                         <td th:text="${lTransaction.getCreateDate()}"></td>
                         <td th:text="${lTransaction.getMessage()}"></td>
