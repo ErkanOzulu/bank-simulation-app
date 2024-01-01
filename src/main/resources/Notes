@@ -53,3 +53,70 @@ TASK
           <li th:each="err :${#fields.errors('userId')}" th:text="${err}"></li>
       </ul>
     </span>
+
+
+    -----
+
+Bank Simulation App - ORM
+
+1. update pom.xml adding orm and database dependecies
+    -Spring Data Jpa
+    -Postgres Driver
+    -Modal Mapper
+
+2.Create bank-simulation database and connect through intellij
+
+3.update application.properties file with adding database information
+
+4.change model package to dto
+    -update class names to AccountDTO, Transaction DTO
+    -change annotation from @Data,@Builder to
+        -getter
+        -setter
+        -allArgConstructor
+        -noArgConstructor
+    -change AccountDTO id from UUID to Long
+    -change sender and receiver UUID to AccountDTO in the Transaction DTO class(comment out NotNull annotation first)
+
+5.Find builders in the controller and update them
+
+    Account Controller  - new AccountDTO();
+    Transaction Controller - new TransactionDTO
+
+        AccountDTO sender = accountService.retrieveById(transactionDTO.getSender().getId());
+        AccountDTO receiver = accountService.retrieveById(transactionDTO.getReceiver().getId());
+
+        added getId() for these methods parameters.
+
+6. Update account and transaction service interface UUID fields to Long with Type Migration
+
+7.Update implementation classes builders to noArg constructor for now (temporary)
+    -both createNewAccount and makeTransfer methods
+
+8.Create entity package
+    -Account
+    -Transaction
+        add needed annotations (enum,date,pk)
+        table names "accounts" and "transactions"
+    -define the relations(oneToOne,manyToOne etc)
+
+9.Run the application (2 times) to see if the tables are created
+
+10.Update Account and Transaction Repository
+    -change the class to interface
+    -extend JpaRepo
+    -change @component to @repository
+
+
+
+
+
+
+
+
+
+
+
+
+
+
