@@ -127,7 +127,15 @@ Bank Simulation App - ORM
     #MakeTransfer
         -executeBalance
 
+            ----
 
+Bank Simulation App - Security
+    - Add dependency
+    - Add loginController
+    - Add login htm
+    - Add User and Role Entity
+    - Add data.sql
+    update application properties
 
 
 
